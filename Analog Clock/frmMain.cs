@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Analog_Clock
@@ -16,13 +10,22 @@ namespace Analog_Clock
         Timer t = new Timer();
 
         // Size
-        int WIDTH = 300;
-        int HEIGHT = 300;
+        int width = 300;
+        int height = 300;
 
         // Handler
-        int secHANDLER = 140;
-        int minHANDLER = 110;
-        int hrHANDLER = 80;
+        int secHandler = 140;
+        int minHandler = 110;
+        int hrHandler = 80;
+
+        // Colors
+        Color colorBackground;
+        Color colorSecondHand;
+        Color colorMinuteHand;
+        Color colorHourHand;
+        Color colorFigure;
+        Color colorDate;
+
 
         // Center
         int cx;
@@ -32,74 +35,106 @@ namespace Analog_Clock
         Bitmap bmp;
         Graphics g;
 
+        // Misc
+        bool showDate;
+        bool showImage;
+        string pathToImage;
+
         public frmMain()
         {
             InitializeComponent();
-            createBitmap();
-            centerOfScreen();
-            defineBackcolor();
-            enableTimer();
+            CreateBitmap();
+            CenterOfScreen();
+            DefineBackcolor();
+            EnableTimer();
         }
 
-        public void createBitmap()
+        public void CreateBitmap()
         {
             // Create bitmap
-            bmp = new Bitmap(WIDTH + 1, HEIGHT + 1);
+            bmp = new Bitmap(width + 1, height + 1);
         }
 
-        private void centerOfScreen()
+        private void CenterOfScreen()
         {
             // Define center of screen
-            cx = WIDTH / 2;
-            cy = HEIGHT / 2;
+            cx = width / 2;
+            cy = height / 2;
         }
 
-        private void defineBackcolor()
+        private void DefineBackcolor()
         {
             this.BackColor = Color.BlanchedAlmond;
         }
 
-        private void enableTimer()
+        private void EnableTimer()
         {
-            t.Interval = 1000;      // in milliseconds
-            t.Tick += new EventHandler(this.t_Tick);
+            t.Interval = 250;      // in milliseconds
+            t.Tick += new EventHandler(this.T_Tick);
             t.Start();
         }
 
-        private void t_Tick(object sender, EventArgs e)
+        private void T_Tick(object sender, EventArgs e)
         {
             // Create graphics
             g = Graphics.FromImage(bmp);
 
-            // Get current time
+            // Get current time and date
             int ss = DateTime.Now.Second;
             int mm = DateTime.Now.Minute;
             int hh = DateTime.Now.Hour;
+            string date = DateTime.Now.ToShortDateString();
             int[] handCoord = new int[2];
 
             // Clear
-            g.Clear(Color.BlanchedAlmond);
+            g.Clear(colorBackground);
 
             // Draw circle
-            g.DrawEllipse(new Pen(Color.Black, 1f), 0, 0, WIDTH, HEIGHT);
+            g.DrawEllipse(new Pen(colorFigure, 1f), 0, 0, width, height);
 
             // Draw figure
-            g.DrawString("12", new Font("Arial", 12), Brushes.Black, new PointF(140, 2));
-            g.DrawString("3", new Font("Arial", 12), Brushes.Black, new PointF(286, 140));
-            g.DrawString("6", new Font("Arial", 12), Brushes.Black, new PointF(142, 282));
-            g.DrawString("9", new Font("Arial", 12), Brushes.Black, new PointF(0, 140));
+            g.DrawString("12", new Font("Arial", 12), new SolidBrush(colorFigure), new PointF(140, 2));
+            g.DrawString("3", new Font("Arial", 12), new SolidBrush(colorFigure), new PointF(286, 140));
+            g.DrawString("6", new Font("Arial", 12), new SolidBrush(colorFigure), new PointF(142, 282));
+            g.DrawString("9", new Font("Arial", 12), new SolidBrush(colorFigure), new PointF(0, 140));
+
+            // Draw date
+            if (showDate)
+            {
+                g.DrawString(date, new Font("Arial", 12), new SolidBrush(colorDate), new PointF(cx / 1.4f, cy / 3 * 2));
+            }
+
+            // Draw image
+            pbxImage.Visible = showImage;
+            if (showImage)
+            {
+                try
+                {
+                    pbxImage.ImageLocation = pathToImage;
+                }
+                catch (System.IO.FileNotFoundException)
+                {
+                    pathToImage = "";
+                    showImage = false;
+
+                    Properties.Settings.Default.frmMainImagePath = pathToImage;
+                    Properties.Settings.Default.frmMainShowImage = showImage;
+                    Properties.Settings.Default.Save();
+                }
+                
+            }
 
             // Second handler
-            handCoord = msCoordinates(ss, secHANDLER);
-            g.DrawLine(new Pen(Color.Red, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+            handCoord = MsCoordinates(ss, secHandler);
+            g.DrawLine(new Pen(colorSecondHand, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
 
             // Minute handler
-            handCoord = msCoordinates(mm, minHANDLER);
-            g.DrawLine(new Pen(Color.Black, 2f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+            handCoord = MsCoordinates(mm, minHandler);
+            g.DrawLine(new Pen(colorMinuteHand, 2f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
 
             // Hour handler
-            handCoord = hrCoordinates(hh % 12 ,mm , hrHANDLER);
-            g.DrawLine(new Pen(Color.Gray, 3f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+            handCoord = HrCoordinates(hh % 12 ,mm , hrHandler);
+            g.DrawLine(new Pen(colorHourHand, 3f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
 
             // Load bitmap in PictureBox
             pbxClock.Image = bmp;
@@ -109,7 +144,7 @@ namespace Analog_Clock
         }
 
         // Coord for minute handler
-        private int [] msCoordinates(int val, int hlen)
+        private int [] MsCoordinates(int val, int hlen)
         {
             int[] coord = new int[2];
             val *= 6;               // Each minute and second makes 6 degree
@@ -129,7 +164,7 @@ namespace Analog_Clock
         }
 
         // Coord for hour handler
-        private int[] hrCoordinates(int hval,int mval, int hlen)
+        private int[] HrCoordinates(int hval,int mval, int hlen)
         {
             int[] coord = new int[2];
 
@@ -149,6 +184,223 @@ namespace Analog_Clock
             }
 
             return coord;
+        }
+
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+            // Load location
+            this.Location = Properties.Settings.Default.frmMainPosition;
+
+            // load background color
+            this.BackColor = Properties.Settings.Default.frmMainBGColor;
+            colorBackground = this.BackColor;
+
+            // Load second hand color
+            colorSecondHand = Properties.Settings.Default.frmMainColorSecondHand;
+
+            // Load minute hand color
+            colorMinuteHand = Properties.Settings.Default.frmMainColorMinuteHand;
+
+            // Load show date
+            showDate = Properties.Settings.Default.frmMainShowDate;
+            showDateToolStripMenuItem.Checked = showDate;
+
+            // Load figure color
+            colorFigure = Properties.Settings.Default.frmMainColorFigure;
+
+            // Load date color
+            colorDate = Properties.Settings.Default.frmMainColorDate;
+
+            // Load hour hand color
+            colorHourHand = Properties.Settings.Default.frmMainColorHourHand;
+
+            // Load show image
+            showImage = Properties.Settings.Default.frmMainShowImage;
+
+            // Load path to image
+            pathToImage = Properties.Settings.Default.frmMainImagePath;
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Save window location
+            Properties.Settings.Default.frmMainPosition = this.Location;
+
+            // Save background color
+            Properties.Settings.Default.frmMainBGColor = colorBackground;
+
+            // Save second hand color
+            Properties.Settings.Default.frmMainColorSecondHand = colorSecondHand;
+
+            // Save minute hand color
+            Properties.Settings.Default.frmMainColorMinuteHand = colorMinuteHand;
+
+            // Save hour hand color
+            Properties.Settings.Default.frmMainColorHourHand = colorHourHand;
+
+            // Save show date
+            Properties.Settings.Default.frmMainShowDate = showDate;
+
+            // Save figure color
+            Properties.Settings.Default.frmMainColorFigure = colorFigure;
+
+            // Save date color
+            Properties.Settings.Default.frmMainColorDate = colorDate;
+
+            // Save show image
+            Properties.Settings.Default.frmMainShowImage = showImage;
+
+            // Save path to image
+            Properties.Settings.Default.frmMainImagePath = pathToImage;
+
+            // Sync settings
+            Properties.Settings.Default.Save();
+        }
+
+        private void BackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the color dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                this.BackColor = colDialog.Color;
+                colorBackground = this.BackColor;
+
+                Properties.Settings.Default.frmMainBGColor = this.BackColor;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void SecondHandColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                colorSecondHand = colDialog.Color;
+
+                Properties.Settings.Default.frmMainColorSecondHand = colorSecondHand;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void MinuteHandColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                colorMinuteHand = colDialog.Color;
+
+                Properties.Settings.Default.frmMainColorMinuteHand = colorMinuteHand;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void HourHandColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                colorHourHand = colDialog.Color;
+
+                Properties.Settings.Default.frmMainColorHourHand = colorHourHand;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void ShowDateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showDate = !showDate;
+            showDateToolStripMenuItem.Checked = showDate;
+        }
+
+        private void FigureColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                colorFigure = colDialog.Color;
+
+                Properties.Settings.Default.frmMainColorFigure = colorFigure;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void DateColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog colDialog = new ColorDialog();
+
+            // Show the dialog.
+            DialogResult result = colDialog.ShowDialog();
+
+            // If the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                colorDate = colDialog.Color;
+
+                Properties.Settings.Default.frmMainColorDate = colorDate;
+                Properties.Settings.Default.Save();
+            }
+
+            colDialog = null;
+        }
+
+        private void ShowImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showImage = !showImage;
+            showImageToolStripMenuItem.Checked = showImage;
+
+            Properties.Settings.Default.frmMainShowImage = showImage;
+            Properties.Settings.Default.Save();
+        }
+
+        private void PathToImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+
+            // Show the dialog.
+            DialogResult result = ofd.ShowDialog();
+
+            // IF the user pressed ok.
+            if (result == DialogResult.OK)
+            {
+                pathToImage = ofd.FileName;
+            }
+
+            ofd = null;
         }
     }
 }
