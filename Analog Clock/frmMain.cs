@@ -40,6 +40,9 @@ namespace Analog_Clock
         public frmMain()
         {
             InitializeComponent();
+
+            this.Icon = Properties.Resources.if_Clock___Time_11035;
+
             CreateBitmap();
             CenterOfScreen();
             DefineBackcolor();
