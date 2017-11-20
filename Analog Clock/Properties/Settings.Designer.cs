@@ -118,29 +118,5 @@ namespace Analog_Clock.Properties {
                 this["frmMainColorDate"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string frmMainImagePath {
-            get {
-                return ((string)(this["frmMainImagePath"]));
-            }
-            set {
-                this["frmMainImagePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool frmMainShowImage {
-            get {
-                return ((bool)(this["frmMainShowImage"]));
-            }
-            set {
-                this["frmMainShowImage"] = value;
-            }
-        }
     }
 }

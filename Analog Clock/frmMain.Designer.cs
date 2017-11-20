@@ -39,13 +39,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.showDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dateColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.showImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathToImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pbxImage = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbxClock)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxImage)).BeginInit();
             this.SuspendLayout();
             // 
             // pbxClock
@@ -68,12 +63,9 @@
             this.figureColorToolStripMenuItem,
             this.toolStripSeparator1,
             this.showDateToolStripMenuItem,
-            this.dateColorToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.showImageToolStripMenuItem,
-            this.pathToImageToolStripMenuItem});
+            this.dateColorToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(187, 214);
+            this.contextMenuStrip.Size = new System.Drawing.Size(187, 186);
             // 
             // backgroundColorToolStripMenuItem
             // 
@@ -129,41 +121,12 @@
             this.dateColorToolStripMenuItem.Text = "Date Color...";
             this.dateColorToolStripMenuItem.Click += new System.EventHandler(this.DateColorToolStripMenuItem_Click);
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(183, 6);
-            // 
-            // showImageToolStripMenuItem
-            // 
-            this.showImageToolStripMenuItem.Name = "showImageToolStripMenuItem";
-            this.showImageToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.showImageToolStripMenuItem.Text = "Show Image";
-            this.showImageToolStripMenuItem.Click += new System.EventHandler(this.ShowImageToolStripMenuItem_Click);
-            // 
-            // pathToImageToolStripMenuItem
-            // 
-            this.pathToImageToolStripMenuItem.Name = "pathToImageToolStripMenuItem";
-            this.pathToImageToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.pathToImageToolStripMenuItem.Text = "Path to Image...";
-            this.pathToImageToolStripMenuItem.Click += new System.EventHandler(this.PathToImageToolStripMenuItem_Click);
-            // 
-            // pbxImage
-            // 
-            this.pbxImage.Location = new System.Drawing.Point(115, 199);
-            this.pbxImage.Name = "pbxImage";
-            this.pbxImage.Size = new System.Drawing.Size(159, 113);
-            this.pbxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbxImage.TabIndex = 1;
-            this.pbxImage.TabStop = false;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 361);
             this.ContextMenuStrip = this.contextMenuStrip;
-            this.Controls.Add(this.pbxImage);
             this.Controls.Add(this.pbxClock);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
@@ -174,7 +137,6 @@
             this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pbxClock)).EndInit();
             this.contextMenuStrip.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbxImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -191,10 +153,6 @@
         private System.Windows.Forms.ToolStripMenuItem figureColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem dateColorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem showImageToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pathToImageToolStripMenuItem;
-        private System.Windows.Forms.PictureBox pbxImage;
     }
 }
 

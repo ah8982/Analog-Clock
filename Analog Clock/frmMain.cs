@@ -26,7 +26,6 @@ namespace Analog_Clock
         Color colorFigure;
         Color colorDate;
 
-
         // Center
         int cx;
         int cy;
@@ -37,8 +36,6 @@ namespace Analog_Clock
 
         // Misc
         bool showDate;
-        bool showImage;
-        string pathToImage;
 
         public frmMain()
         {
@@ -102,26 +99,6 @@ namespace Analog_Clock
             if (showDate)
             {
                 g.DrawString(date, new Font("Arial", 12), new SolidBrush(colorDate), new PointF(cx / 1.4f, cy / 3 * 2));
-            }
-
-            // Draw image
-            pbxImage.Visible = showImage;
-            if (showImage)
-            {
-                try
-                {
-                    pbxImage.ImageLocation = pathToImage;
-                }
-                catch (System.IO.FileNotFoundException)
-                {
-                    pathToImage = "";
-                    showImage = false;
-
-                    Properties.Settings.Default.frmMainImagePath = pathToImage;
-                    Properties.Settings.Default.frmMainShowImage = showImage;
-                    Properties.Settings.Default.Save();
-                }
-                
             }
 
             // Second handler
@@ -213,12 +190,6 @@ namespace Analog_Clock
 
             // Load hour hand color
             colorHourHand = Properties.Settings.Default.frmMainColorHourHand;
-
-            // Load show image
-            showImage = Properties.Settings.Default.frmMainShowImage;
-
-            // Load path to image
-            pathToImage = Properties.Settings.Default.frmMainImagePath;
         }
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -246,12 +217,6 @@ namespace Analog_Clock
 
             // Save date color
             Properties.Settings.Default.frmMainColorDate = colorDate;
-
-            // Save show image
-            Properties.Settings.Default.frmMainShowImage = showImage;
-
-            // Save path to image
-            Properties.Settings.Default.frmMainImagePath = pathToImage;
 
             // Sync settings
             Properties.Settings.Default.Save();
@@ -376,31 +341,6 @@ namespace Analog_Clock
             }
 
             colDialog = null;
-        }
-
-        private void ShowImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showImage = !showImage;
-            showImageToolStripMenuItem.Checked = showImage;
-
-            Properties.Settings.Default.frmMainShowImage = showImage;
-            Properties.Settings.Default.Save();
-        }
-
-        private void PathToImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-
-            // Show the dialog.
-            DialogResult result = ofd.ShowDialog();
-
-            // IF the user pressed ok.
-            if (result == DialogResult.OK)
-            {
-                pathToImage = ofd.FileName;
-            }
-
-            ofd = null;
         }
     }
 }
